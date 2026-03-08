@@ -1,172 +1,82 @@
-let uploadedFile = null;
-let processedImage = null;
-let selectedColor = "#ffffff";
-
-const fileInput = document.getElementById("upload");
-const generateBtn = document.getElementById("generateBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-const canvas = document.getElementById("resultCanvas");
+const upload = document.getElementById("upload");
+const processBtn = document.getElementById("processBtn");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-/* -----------------------------
-   IMAGE RESIZE FUNCTION
-------------------------------*/
+let removedBgImage;
 
-async function resizeImage(file) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+processBtn.onclick = async () => {
 
-    img.onload = () => {
+const file = upload.files[0];
 
-      const MAX_SIZE = 1024;
-
-      let width = img.width;
-      let height = img.height;
-
-      if (width > height && width > MAX_SIZE) {
-        height *= MAX_SIZE / width;
-        width = MAX_SIZE;
-      } else if (height > MAX_SIZE) {
-        width *= MAX_SIZE / height;
-        height = MAX_SIZE;
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      ctx.drawImage(img, 0, 0, width, height);
-
-      canvas.toBlob((blob) => {
-        resolve(blob);
-      }, "image/jpeg", 0.9);
-
-    };
-
-    img.src = URL.createObjectURL(file);
-  });
+if(!file){
+alert("Please upload an image first");
+return;
 }
 
-/* -----------------------------
-   FILE UPLOAD
-------------------------------*/
+const blob = await removeBackground(file, {
+  publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/",
+});
+const img = new Image();
+img.src = URL.createObjectURL(blob);
 
-fileInput.addEventListener("change", function () {
+img.onload = () => {
 
-  const file = this.files[0];
+removedBgImage = img;
 
-  if (!file) return;
+applyBackground();
 
-  if (file.size > 6 * 1024 * 1024) {
-    alert("Please upload an image smaller than 6MB.");
-    fileInput.value = "";
-    return;
-  }
+};
 
-  uploadedFile = file;
+};
+
+
+function applyBackground(){
+
+const bgColor = document.getElementById("bgColor").value;
+
+canvas.width = removedBgImage.width;
+canvas.height = removedBgImage.height;
+
+if(bgColor !== "transparent"){
+
+ctx.fillStyle = bgColor;
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+}else{
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+}
+
+ctx.drawImage(removedBgImage,0,0);
+
+}
+
+
+document.getElementById("bgColor").addEventListener("change", () => {
+
+if(removedBgImage){
+applyBackground();
+}
 
 });
 
-/* -----------------------------
-   BACKGROUND COLOR SELECT
-------------------------------*/
 
-document.querySelectorAll(".bg-option").forEach(btn => {
+function downloadImage(format){
 
-  btn.addEventListener("click", function () {
+let link = document.createElement("a");
 
-    document.querySelectorAll(".bg-option").forEach(b => b.classList.remove("active"));
+if(format==="png"){
+link.download="passport-photo.png";
+link.href=canvas.toDataURL("image/png");
+}
 
-    this.classList.add("active");
+if(format==="jpeg"){
+link.download="passport-photo.jpeg";
+link.href=canvas.toDataURL("image/jpeg");
+}
 
-    selectedColor = this.dataset.color;
+link.click();
 
-  });
-
-});
-
-/* -----------------------------
-   GENERATE PASSPORT PHOTO
-------------------------------*/
-
-generateBtn.addEventListener("click", async () => {
-
-  if (!uploadedFile) {
-    alert("Please upload an image first.");
-    return;
-  }
-
-  try {
-
-    generateBtn.innerText = "Processing...";
-    generateBtn.disabled = true;
-
-    const resizedImage = await resizeImage(uploadedFile);
-
-    const blob = await removeBackground(resizedImage);
-
-    const img = new Image();
-
-    img.onload = () => {
-
-      canvas.width = 600;
-      canvas.height = 600;
-
-      ctx.fillStyle = selectedColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const scale = Math.min(
-        canvas.width / img.width,
-        canvas.height / img.height
-      );
-
-      const width = img.width * scale;
-      const height = img.height * scale;
-
-      const x = (canvas.width - width) / 2;
-      const y = (canvas.height - height) / 2;
-
-      ctx.drawImage(img, x, y, width, height);
-
-      processedImage = canvas.toDataURL("image/png");
-
-      generateBtn.innerText = "Generate Passport Photo";
-      generateBtn.disabled = false;
-
-      downloadBtn.style.display = "inline-block";
-
-    };
-
-    img.src = URL.createObjectURL(blob);
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert("Error while processing image. Please try a smaller image.");
-
-    generateBtn.innerText = "Generate Passport Photo";
-    generateBtn.disabled = false;
-
-  }
-
-});
-
-/* -----------------------------
-   DOWNLOAD IMAGE
-------------------------------*/
-
-downloadBtn.addEventListener("click", () => {
-
-  if (!processedImage) return;
-
-  const link = document.createElement("a");
-
-  link.href = processedImage;
-
-  link.download = "passport-photo.png";
-
-  link.click();
-
-});
+}

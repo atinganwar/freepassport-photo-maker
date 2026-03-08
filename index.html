@@ -1,28 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Passport Photo Maker</title>
-    <link rel="stylesheet" href="styles.css">
+<title>Free Background Remover</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header>
-        <h1>Free Passport Photo Maker</h1>
-    </header>
-    <section class="hero">
-        <h2>Create Your Passport Photo</h2>
-        <p>Upload your photo below!</p>
-    </section>
-    <section class="upload-zone">
-        <input type="file" id="upload" accept="image/*">
-        <div id="preview"></div>
-        <button id="download">Download Photo</button>
-    </section>
-    <section class="color-options">
-        <h3>Select Background Color:</h3>
-        <input type="color" id="colorPicker" value="#ffffff">
-    </section>
-    <script src="script.js"></script>
+
+<h1>Free Background Remover for Passport and Any Other Purposes</h1>
+
+<div class="container">
+
+<input type="file" id="upload" accept="image/*">
+
+<br><br>
+
+<label>Select Background Colour / Purpose</label>
+
+<select id="bgColor">
+<option value="white">Passport White Background</option>
+<option value="blue">Passport Blue Background</option>
+<option value="lightgray">Professional Grey</option>
+<option value="red">Visa Red Background</option>
+<option value="green">Nature Green</option>
+<option value="transparent">Transparent</option>
+</select>
+
+<br><br>
+
+<button id="processBtn">Generate Preview</button>
+
+<br><br>
+
+<h3>Preview</h3>
+
+<canvas id="canvas"></canvas>
+
+<br>
+
+<button onclick="downloadImage('png')">Download PNG</button>
+<button onclick="downloadImage('jpeg')">Download JPEG</button>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/bundle.min.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
