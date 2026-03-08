@@ -1,207 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passport Photo Maker - Free Background Remover</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Free Passport Photo Maker</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#f4f6fb;
+text-align:center;
+padding:40px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+.upload{
+margin-bottom:25px;
+}
+
+.bg-options{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:25px;
+}
+
+.bg-option{
+padding:12px 18px;
+border-radius:8px;
+border:1px solid #ddd;
+cursor:pointer;
+background:white;
+}
+
+.bg-option.active{
+border:2px solid #4f46e5;
+}
+
+button{
+padding:14px 25px;
+border:none;
+border-radius:8px;
+background:#4f46e5;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+canvas{
+margin-top:25px;
+border:1px solid #ddd;
+}
+
+#downloadBtn{
+margin-top:20px;
+display:none;
+background:#16a34a;
+}
+
+</style>
+
 </head>
 
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="40" height="40" rx="10" fill="url(#grad)" />
-          <path d="M12 28V14a2 2 0 012-2h12a2 2 0 012 2v14" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-          <circle cx="20" cy="18" r="4" stroke="#fff" stroke-width="2" />
-          <path d="M13 28c0-3 3-5 7-5s7 2 7 5" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-          <defs>
-            <linearGradient id="grad" x1="0" y1="0" x2="40" y2="40">
-              <stop stop-color="#4F46E5" />
-              <stop offset="1" stop-color="#7C3AED" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <span class="logo-text">Passport Photo Maker</span>
-      </div>
-      <p class="header-tagline">Create perfect passport &amp; visa photos in seconds</p>
-    </div>
-  </header>
+<div class="container">
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Professional Passport Photos, <span class="gradient-text">Instantly Free</span></h1>
-    <p class="hero-sub">Remove backgrounds and generate standard-compliant passport, visa, and ID photos right in your browser. No uploads to servers &mdash; 100% private.</p>
-  </section>
+<h1>Free Passport Photo Maker</h1>
 
-  <!-- Main App -->
-  <main class="app-container">
+<div class="upload">
+<input type="file" id="upload" accept="image/*">
+</div>
 
-    <!-- Step 1: Upload -->
-    <div class="step-card">
-      <div class="step-badge">Step 1</div>
-      <h2 class="step-title">Upload Your Photo</h2>
-      <p class="step-desc">Choose a clear, front-facing photo with good lighting for best results.</p>
+<h3>Select Background</h3>
 
-      <div class="upload-zone" id="uploadZone">
-        <input type="file" id="upload" accept="image/*" class="upload-input">
-        <div class="upload-content" id="uploadContent">
-          <svg class="upload-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="40" height="40" rx="8" stroke="#A5B4FC" stroke-width="2" stroke-dasharray="4 3" />
-            <path d="M24 16v16M16 24h16" stroke="#6366F1" stroke-width="2.5" stroke-linecap="round" />
-          </svg>
-          <p class="upload-text">Drag &amp; drop your photo here</p>
-          <p class="upload-subtext">or click to browse files</p>
-          <span class="upload-formats">Supports JPG, PNG, WEBP</span>
-        </div>
-        <div class="upload-preview-wrapper" id="uploadPreviewWrapper" style="display:none;">
-          <img id="uploadPreview" class="upload-preview-img" alt="Preview">
-          <button class="remove-photo-btn" id="removePhotoBtn" title="Remove photo">&times;</button>
-        </div>
-      </div>
-    </div>
+<div class="bg-options">
 
-    <!-- Step 2: Options -->
-    <div class="step-card">
-      <div class="step-badge">Step 2</div>
-      <h2 class="step-title">Choose Background</h2>
-      <p class="step-desc">Select the background colour required for your passport or document.</p>
+<button class="bg-option active" data-color="#ffffff">White</button>
+<button class="bg-option" data-color="#1e3a8a">Blue</button>
+<button class="bg-option" data-color="#7f1d1d">Red</button>
+<button class="bg-option" data-color="#065f46">Green</button>
+<button class="bg-option" data-color="#4b5563">Grey</button>
 
-      <div class="color-options" id="colorOptions">
-        <label class="color-option selected" data-color="white">
-          <span class="color-swatch" style="background:white; border: 1px solid #e2e8f0;"></span>
-          <span class="color-label">White</span>
-          <span class="color-use">Passport</span>
-        </label>
-        <label class="color-option" data-color="blue">
-          <span class="color-swatch" style="background:#1E88E5;"></span>
-          <span class="color-label">Blue</span>
-          <span class="color-use">Passport</span>
-        </label>
-        <label class="color-option" data-color="lightgray">
-          <span class="color-swatch" style="background:#b0bec5;"></span>
-          <span class="color-label">Grey</span>
-          <span class="color-use">Professional</span>
-        </label>
-        <label class="color-option" data-color="red">
-          <span class="color-swatch" style="background:#E53935;"></span>
-          <span class="color-label">Red</span>
-          <span class="color-use">Visa</span>
-        </label>
-        <label class="color-option" data-color="green">
-          <span class="color-swatch" style="background:#43A047;"></span>
-          <span class="color-label">Green</span>
-          <span class="color-use">Nature</span>
-        </label>
-        <label class="color-option" data-color="transparent">
-          <span class="color-swatch transparent-swatch"></span>
-          <span class="color-label">None</span>
-          <span class="color-use">Transparent</span>
-        </label>
-      </div>
+</div>
 
-      <!-- Hidden select to maintain JS compatibility -->
-      <select id="bgColor" style="display:none;">
-        <option value="white" selected>Passport White Background</option>
-        <option value="blue">Passport Blue Background</option>
-        <option value="lightgray">Professional Grey</option>
-        <option value="red">Visa Red Background</option>
-        <option value="green">Nature Green</option>
-        <option value="transparent">Transparent</option>
-      </select>
+<button id="generateBtn">Generate Passport Photo</button>
 
-      <button id="processBtn" class="btn-primary">
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-        </svg>
-        Generate Passport Photo
-      </button>
-    </div>
+<br>
 
-    <!-- Step 3: Preview & Download -->
-    <div class="step-card" id="previewCard" style="display:none;">
-      <div class="step-badge step-badge-success">Step 3</div>
-      <h2 class="step-title">Preview &amp; Download</h2>
-      <p class="step-desc">Your passport photo is ready. Download it in your preferred format.</p>
+<canvas id="resultCanvas"></canvas>
 
-      <div class="preview-area">
-        <canvas id="canvas"></canvas>
-      </div>
+<br>
 
-      <div class="download-actions">
-        <button class="btn-download btn-png" onclick="downloadImage('png')">
-          <svg class="btn-icon" viewBox="0 0 20 20" fill="none"><path d="M10 3v10m0 0l-3-3m3 3l3-3M4 17h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download PNG
-        </button>
-        <button class="btn-download btn-jpg" onclick="downloadImage('jpeg')">
-          <svg class="btn-icon" viewBox="0 0 20 20" fill="none"><path d="M10 3v10m0 0l-3-3m3 3l3-3M4 17h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download JPEG
-        </button>
-      </div>
-    </div>
+<button id="downloadBtn">Download Photo</button>
 
-  </main>
+</div>
 
-  <!-- Features Section -->
-  <section class="features">
-    <h2 class="features-title">Why Choose Passport Photo Maker?</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <h3>100% Private</h3>
-        <p>All processing happens in your browser. Your photos never leave your device.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <h3>AI-Powered</h3>
-        <p>Advanced AI accurately removes backgrounds while keeping fine hair details.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#059669" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#059669" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <h3>Instant Results</h3>
-        <p>Get your passport-ready photo in seconds. No sign-up or payment required.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="#E11D48" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="#E11D48" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <h3>Any Device</h3>
-        <p>Works on desktop, tablet, and mobile. No software installation needed.</p>
-      </div>
-    </div>
-  </section>
+<!-- Background Removal Library -->
+<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/bundle.min.js"></script>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>&copy; 2026 Passport Photo Maker. Free online passport photo tool.</p>
-  </footer>
-
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-card">
-      <div class="spinner"></div>
-      <p class="loading-text">Removing background...</p>
-      <p class="loading-sub">This may take a few moments</p>
-    </div>
-  </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/bundle.min.js"></script>
+<!-- Your Script -->
 <script src="script.js"></script>
+
 </body>
 </html>
-
-
-
