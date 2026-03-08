@@ -76,37 +76,37 @@ removePhotoBtn.addEventListener("click", (e) => {
 
 // --- Process button ---
 processBtn.onclick = async () => {
-  const file = upload.files[0];
 
-  if (!file) {
-    alert("Please upload an image first.");
-    return;
-  }
+try{
 
-  loadingOverlay.classList.add("active");
+const file = upload.files[0];
 
-  try {
-    const blob = await removeBackground(file);
-    const img = new Image();
-    img.src = URL.createObjectURL(blob);
+if(!file){
+alert("Please upload an image first");
+return;
+}
 
-    img.onload = () => {
-      removedBgImage = img;
-      applyBackground();
-      previewCard.style.display = "block";
-      previewCard.scrollIntoView({ behavior: "smooth", block: "center" });
-      loadingOverlay.classList.remove("active");
-    };
+const blob = await window.removeBackground(file,{
+publicPath:"https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/"
+});
 
-    img.onerror = () => {
-      loadingOverlay.classList.remove("active");
-      alert("Error loading the processed image. Please try again.");
-    };
-  } catch (err) {
-    loadingOverlay.classList.remove("active");
-    alert("Error processing image. Please try again.");
-    console.error(err);
-  }
+const img = new Image();
+img.src = URL.createObjectURL(blob);
+
+img.onload = () => {
+
+removedBgImage = img;
+applyBackground();
+
+};
+
+}catch(error){
+
+console.error(error);
+alert("Error while processing image. Try a smaller image.");
+
+}
+
 };
 
 // --- Apply background ---
@@ -153,3 +153,4 @@ function downloadImage(format) {
 
   link.click();
 }
+
