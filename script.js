@@ -14,6 +14,40 @@ const colorOptions = document.querySelectorAll(".color-option");
 
 let removedBgImage;
 
+async function resizeImage(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    img.onload = () => {
+      const MAX = 1024;
+
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height && width > MAX) {
+        height *= MAX / width;
+        width = MAX;
+      } else if (height > MAX) {
+        width *= MAX / height;
+        height = MAX;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, "image/jpeg", 0.9);
+    };
+
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 // --- Color option click handling ---
 colorOptions.forEach(option => {
   option.addEventListener("click", () => {
@@ -74,6 +108,11 @@ removePhotoBtn.addEventListener("click", (e) => {
   previewCard.style.display = "none";
 });
 
+if (file.size > 5 * 1024 * 1024) {
+  alert("Please upload an image smaller than 5MB.");
+  return;
+}
+
 // --- Process button ---
 processBtn.onclick = async () => {
 
@@ -86,7 +125,8 @@ alert("Please upload an image first");
 return;
 }
 
-const blob = await window.removeBackground(file,{
+const resizedFile = await resizeImage(file);
+const result = await removeBackground(resizedFile);
 publicPath:"https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/"
 });
 
@@ -153,4 +193,5 @@ function downloadImage(format) {
 
   link.click();
 }
+
 
